@@ -1,0 +1,46 @@
+import os
+import tempfile
+from datetime import datetime
+from test_dataframe import CreateDataFrame
+import pandas as pd
+import pytest
+
+@pytest.fixture
+def temp_dir():
+    # Crea un directorio temporal para las pruebas
+    with tempfile.TemporaryDirectory() as temp_dir:
+        yield temp_dir
+
+def test_create_dataframe(temp_dir):
+    # Configura tu estructura de directorios de prueba
+    source_folder = os.path.join(temp_dir, "source_folder")
+    backup_folder = os.path.join(temp_dir, "backup")
+    os.makedirs(source_folder)
+
+    # Crear instancias de la clase CreateDataFrame
+    create_df_instance = CreateDataFrame(file_path=source_folder)
+
+    # Crea algunos archivos de prueba en la carpeta source_folder
+    file1_path = os.path.join(source_folder, "file1.txt")
+    file2_path = os.path.join(source_folder, "file2.txt")
+    with open(file1_path, "w") as file1, open(file2_path, "w") as file2:
+        file1.write("date: 2022-01-01, mission: Mission1, device_type: Type1, device_status: Status1, hash: Hash1")
+        file2.write("date: 2022-01-02, mission: Mission2, device_type: Type2, device_status: Status2, hash: Hash2")
+
+    # Llama a los métodos de la clase y realiza las aserciones
+    create_df_instance.read_files_from_path()
+
+    # Verifica que se haya creado la carpeta 'dataframes'
+    assert os.path.exists(os.path.join(create_df_instance.current_directory, 'dataframes'))
+
+    # Verifica que se haya creado el archivo CSV en la carpeta 'dataframes'
+    dataframes_folder = os.path.join(create_df_instance.current_directory, 'dataframes')
+    assert any(file.startswith('APLSTATS-REPORTE') and file.endswith('.csv') for file in os.listdir(dataframes_folder))
+
+    # Verifica que se haya creado la carpeta de respaldo
+    assert os.path.exists(os.path.join(create_df_instance.current_directory, 'backup'))
+
+    # Verifica que los archivos se hayan movido a la carpeta de respaldo
+    backup_files = os.listdir(os.path.join(create_df_instance.current_directory, 'backup'))
+    assert 'file1.txt' in backup_files
+    assert 'file2.txt' in backup_files

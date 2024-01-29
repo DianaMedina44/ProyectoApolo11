@@ -1,0 +1,7 @@
+{
+    "intervalo_ejecucion_segundos": 10,
+    "rango_numeros": {
+        "min_value": 1,
+        "max_value": 2
+    }
+}

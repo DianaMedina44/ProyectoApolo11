@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "proyecto-final"
+version = "0.1.0"
+description = ""
+authors = ["DianaMedina44 <dimedin44@misena.edu.co>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pandas = "^2.2.0"
+flake8 = "^7.0.0"
+pytest = "^8.0.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
